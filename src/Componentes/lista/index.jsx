@@ -7,6 +7,7 @@ function Lista() {
 
   const [data, setData] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState('All');
+  const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
     const obtenerDatos = async () => {
@@ -30,7 +31,15 @@ function Lista() {
   };
 
   return (
-    <>
+<>
+    <input
+        type="text"
+        placeholder="Buscar Pokémon"
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+        className="c-buscador"
+      />
+
       <Filtro onTipoChange={handleTipoChange} />
     <section className='c-lista'>
       {data.map((pokemon, index) => (
