@@ -9,6 +9,21 @@ function Lista() {
   const [tipoSeleccionado, setTipoSeleccionado] = useState('All');
   const [busqueda, setBusqueda] = useState('');
 
+  let resultados = data;
+
+  if (busqueda.length >= 3 && isNaN(busqueda)) {
+    resultados = data.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(busqueda.toLowerCase())
+    );
+  }
+
+  if (!isNaN(busqueda)) {
+    resultados = data.filter(pokemon =>
+      pokemon.url.includes('/' + busqueda)
+    );
+  }
+
+
   useEffect(() => {
     const obtenerDatos = async () => {
       if (tipoSeleccionado === 'All') {
@@ -42,7 +57,7 @@ function Lista() {
 
       <Filtro onTipoChange={handleTipoChange} />
     <section className='c-lista'>
-      {data.map((pokemon, index) => (
+      {resultados.map((pokemon, index) => (
         <div className='c-lista-pokemon'
         key={index}>
           <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.url.split("/")[6]}.png`} 
