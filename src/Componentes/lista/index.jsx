@@ -1,28 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState,useEffect } from 'react'
 import Filtro from '../filtro';
+import { useNavigate } from "react-router-dom";
+
 import './style.css'
 
-
 function Lista() {
-
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState('All');
   const [busqueda, setBusqueda] = useState('');
-
-  let resultados = data;
-
-  if (busqueda.length >= 3 && isNaN(busqueda)) {
-    resultados = data.filter(pokemon =>
-      pokemon.name.toLowerCase().includes(busqueda.toLowerCase())
-    );
-  }
-
-  if (!isNaN(busqueda)) {
-    resultados = data.filter(pokemon =>
-      pokemon.url.includes('/' + busqueda)
-    );
-  }
-
 
   useEffect(() => {
     const obtenerDatos = async () => {
@@ -45,29 +31,47 @@ function Lista() {
     setTipoSeleccionado(tipo);
   };
 
+  let resultados=data;
+
+  if (!isNaN(busqueda)) {
+    resultados = data.filter(pokemon =>
+      pokemon.url.includes('/' + busqueda)
+    );
+  }
+
+  if (busqueda.length >= 2 && isNaN(busqueda)) {
+    resultados = data.filter(pokemon =>
+      pokemon.name.toLowerCase().includes(busqueda.toLowerCase())
+    );
+  }
+
+
   return (
-<>
-    <input
+    <>
+     <input
         type="text"
         placeholder="Buscar Pokémon"
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
         className="c-buscador"
       />
+    <Filtro onTipoChange={handleTipoChange} />
 
-      <Filtro onTipoChange={handleTipoChange} />
     <section className='c-lista'>
-      {resultados.map((pokemon, index) => (
-        <div className='c-lista-pokemon'
-        key={index}>
-          <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.url.split("/")[6]}.png`} 
-                alt={`Pokémon ${pokemon.name}`} width='auto' height='60' loading='lazy'
-              />
-          <p>{pokemon.name}</p>
-        </div>
-      ))}
-    </section>
-    </>
+    {resultados.map((pokemon, index) => (
+      <div className='c-lista-pokemon'
+      onClick={() => navigate(`/pokemon/${pokemon.name}`)}
+      key={index}>
+        <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.url.split("/")[6]}.png`} 
+              alt={`Pokémon ${pokemon.name}`} width='auto' height='60' loading='lazy'
+            />
+        <p>{pokemon.name}</p>
+      </div>
+    ))}
+  </section>
+
+  </>
+
   )
 }
 
