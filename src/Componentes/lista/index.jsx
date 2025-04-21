@@ -1,16 +1,37 @@
 import { useState, useEffect } from 'react'
+import Filtro from '../filtro';
 import './style.css'
 
+
 function Lista() {
+
   const [data, setData] = useState([]);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState('All');
+
   useEffect(() => {
-    fetch("https://pokeapi.co/api/v2/pokemon/?limit=1025")
-      .then(response => response.json())
-      .then(responseData => setData(responseData.results))
-      .catch(error => console.error("Error:", error));
-  }, []); 
+    const obtenerDatos = async () => {
+      if (tipoSeleccionado === 'All') {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${1025}`);
+        const json = await res.json();
+        setData(json.results);
+      } else {
+        const res = await fetch(`https://pokeapi.co/api/v2/type/${tipoSeleccionado}`);
+        const json = await res.json();
+        const listaFiltrada = json.pokemon.map(p => p.pokemon);
+        setData(listaFiltrada);
+      }
+    };
+
+    obtenerDatos();
+  }, [tipoSeleccionado]);
+
+  const handleTipoChange = (tipo) => {
+    setTipoSeleccionado(tipo);
+  };
 
   return (
+    <>
+      <Filtro onTipoChange={handleTipoChange} />
     <section className='c-lista'>
       {data.map((pokemon, index) => (
         <div className='c-lista-pokemon'
@@ -22,6 +43,7 @@ function Lista() {
         </div>
       ))}
     </section>
+    </>
   )
 }
 
