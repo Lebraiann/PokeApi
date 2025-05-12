@@ -33,7 +33,7 @@ function Aleatorios() {
       {aleatorio.map((pokemon ,index) => (
         <div className="c-lista-pokemon c-un_aleatorio" 
         key={index}
-        onClick={() => navigate(`/detalle/${pokemon.name}`)}
+        onClick={() => navigate(`/pokemon/${pokemon.name}`)}
         >
           <p>{pokemon.url.split("/")[6]}</p>
           <img
